@@ -3,6 +3,8 @@ Dalam perangkat android memiliki banyak sensor yang dapat digunakan,berikut adal
 ## Sensor ACCELOMETER
 __Deskripsi__ : 
 Mengukur gaya akselerasi dalam m/s2 yang diterapkan di perangkat pada ketiga sumbu fisik (x, y, dan z), termasuk gaya gravitasi.
+__Penggunaan Umum__ : 
+
 ## Sensor AMBIENT TEMPERATURE
 __Deskripsi__ : 
 Mengukur suhu ruangan sekitar dalam derajat Celcius (°C).
