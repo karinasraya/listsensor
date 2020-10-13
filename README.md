@@ -3,7 +3,7 @@ Dalam perangkat android memiliki banyak sensor yang dapat digunakan,berikut adal
 ## Sensor ACCELOMETER
 __Deskripsi__ : 
 
-Mengukur gaya akselerasi dalam m/s2 yang diterapkan di perangkat pada ketiga sumbu fisik (x, y, dan z), termasuk gaya gravitasi.
+Mengukur gaya akselerasi dalam m/s2 yang diterapkan di perangkat pada ketiga sumbu fisik (x, y, dan z), termasuk gaya gravitasi.Sensor ini biasa diterapkan untuk mendeteksi pergerakan seperti shake atau tilt. Penggunaan paling umum dari sensor jenis ini adalah saat layar secara otomatis berubah dari mode potrait ke mode landscape. Atau saat memainkan game jenis balap dimana cara mengemudikannya dengan memiringkan posisi perangkat (tilt).
 
 __Penggunaan__ : 
 
@@ -21,7 +21,7 @@ Memantau suhu udara.
 ## Sensor GRAVITY
 __Deskripsi__ : 
 
-Mengukur gaya gravitasi dalam m/s2 yang diterapkan di perangkat pada ketiga sumbu fisik (x, y, z).
+Mengukur gaya gravitasi dalam m/s2 yang diterapkan di perangkat pada ketiga sumbu fisik (x, y, z). Sensor ini bekerja mengikuti arah gravitasi dari perangkat yang digunakan secara vertikal dan horisontal. Mirip dengan Accelerometer, tapi sensor tersebut hanya digunakan untuk mendeteksi posisi saja.
 
 __Penggunaan__ : 
 
@@ -30,11 +30,11 @@ Deteksi gerakan (goyangan, kemiringan, dll.).
 ## Sensor GYROSCOPE
 __Deskripsi__ : 
 
-Mengukur tingkat rotasi perangkat dalam rad/s di sekitar setiap tiga sumbu fisik (x, y, dan z).
+Mengukur tingkat rotasi perangkat dalam rad/s di sekitar setiap tiga sumbu fisik (x, y, dan z). Jika pada accelerometer dipengaruhi oleh gravitasi, maka gyroscope tidak dipengaruhi oleh gravitasi, oleh karena itu gerakan yang dihasilkannya lebih halus dibanding Accelerometer.
 
 __Penggunaan__ : 
 
-Deteksi rotasi (berputar, berbalik, dll.).
+Deteksi rotasi (berputar, berbalik, dll.).Sensor ini biasa dimanfaatkan untuk game seperti Temple Run.
 
 ## Sensor LIGHT
 __Deskripsi__ : 
