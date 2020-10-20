@@ -15,8 +15,6 @@
         android:id="@+id/firstLayout"
         >
 
-
-
         <TextView
             android:layout_width="100sp"
             android:layout_height="wrap_content"
@@ -34,6 +32,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/zValue"
             />
+
     </LinearLayout>
 
     <!-- Gyroscope -->
@@ -64,9 +63,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/zGyroValue"
             />
+
     </LinearLayout>
-
-
 
     <!-- MagnetoMeter -->
 
@@ -96,9 +94,8 @@
             android:layout_height="wrap_content"
             android:id="@+id/zMagnoValue"
             />
+
     </LinearLayout>
-
-
 
 <!--    &lt;!&ndash; Light &ndash;&gt;-->
 
@@ -132,6 +129,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/humi"
                 />
+
     </LinearLayout>
 
 </RelativeLayout>

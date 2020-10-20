@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.sensor;
 
 import android.content.Context;
 import android.hardware.Sensor;
@@ -10,6 +10,8 @@ import android.util.Log;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.sensor.R;
 
 public class MainActivity2 extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = "MainActivity2";
@@ -117,10 +119,6 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             humi.setText("Humi Not Supported");
         }
 
-
-
-
-
     }
 
     @Override
@@ -141,13 +139,11 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             yGyroValue.setText("yGValue : " + sensorEvent.values[1]);
             zGyroValue.setText("zGValue : " + sensorEvent.values[2]);
 
-
         }
         else if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD){
             xMagnoValue.setText("xMValue : " + sensorEvent.values[0]);
             yMagnoValue.setText("yMValue : " + sensorEvent.values[1]);
             zMagnoValue.setText("zMValue : " + sensorEvent.values[2]);
-
 
         }
         else if(sensor.getType() == Sensor.TYPE_LIGHT){
@@ -166,7 +162,5 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             temp.setText("Temperature : " + sensorEvent.values[0]);
 
         }
-
-
     }
 }
