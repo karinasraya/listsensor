@@ -7,6 +7,8 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,13 +17,10 @@ import com.example.sensor.R;
 
 public class MainActivity2 extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = "MainActivity2";
-
     private SensorManager sensorManager;
-
     private Sensor accelerometer,mGyro,mMagno,mLight,mPressure,mTemp,mHumi;
-
     TextView xValue,yValue,zValue,xGyroValue,yGyroValue,zGyroValue,xMagnoValue,yMagnoValue,zMagnoValue,light,pressure,temp,humi;
-
+    private Button tutup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,8 +44,9 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         pressure = (TextView) findViewById(R.id.pressure);
         temp = (TextView) findViewById(R.id.temp);
         humi = (TextView) findViewById(R.id.humi);
-
-
+        tutup = (Button)findViewById(R.id.tutup);
+        tutup.setOnClickListener(operasi);
+                
         Log.d(TAG, "onCreate: Initializing Sensor Services");
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -120,6 +120,15 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         }
 
     }
+
+    View.OnClickListener operasi = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.tutup:finish();break;
+            }
+        }
+    };
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
