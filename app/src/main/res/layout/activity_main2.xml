@@ -130,6 +130,25 @@
                 android:id="@+id/humi"
                 />
 
+        <TextView
+            android:layout_width="200sp"
+            android:layout_height="wrap_content"
+            android:id="@+id/proxi"
+            />
+
+        <TextView
+            android:layout_width="200sp"
+            android:layout_height="wrap_content"
+            android:text="Phone In Pocket : "
+            android:id="@+id/textview"
+            />
+
+        <TextView
+            android:layout_width="200sp"
+            android:layout_height="wrap_content"
+            android:id="@+id/pocket"
+            />
+
     </LinearLayout>
 
     <Button

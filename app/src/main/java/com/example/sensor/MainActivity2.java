@@ -18,9 +18,10 @@ import com.example.sensor.R;
 public class MainActivity2 extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = "MainActivity2";
     private SensorManager sensorManager;
-    private Sensor accelerometer,mGyro,mMagno,mLight,mPressure,mTemp,mHumi;
-    TextView xValue,yValue,zValue,xGyroValue,yGyroValue,zGyroValue,xMagnoValue,yMagnoValue,zMagnoValue,light,pressure,temp,humi;
+    private Sensor accelerometer,mGyro,mMagno,mLight,mPressure,mTemp,mHumi,proximity;
+    TextView xValue,yValue,zValue,xGyroValue,yGyroValue,zGyroValue,xMagnoValue,yMagnoValue,zMagnoValue,light,pressure,temp,humi,prox,pocket;
     private Button tutup;
+    float zval,yval,proxval,lightval;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,9 +45,12 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         pressure = (TextView) findViewById(R.id.pressure);
         temp = (TextView) findViewById(R.id.temp);
         humi = (TextView) findViewById(R.id.humi);
+        prox = (TextView)findViewById(R.id.proxi);
+        pocket = (TextView)findViewById(R.id.pocket);
+
         tutup = (Button)findViewById(R.id.tutup);
         tutup.setOnClickListener(operasi);
-                
+
         Log.d(TAG, "onCreate: Initializing Sensor Services");
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
@@ -59,6 +63,15 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             xValue.setText("Accelerometer Not Supported");
             yValue.setText("Accelerometer Not Supported");
             zValue.setText("Accelerometer Not Supported");
+        }
+
+        proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        if(proximity != null){
+            sensorManager.registerListener(MainActivity2.this,proximity,SensorManager.SENSOR_DELAY_NORMAL);
+            Log.d(TAG, "onCreate: Registered Proximity listener");
+        }
+        else{
+            prox.setText("Proximity Not Supported");
         }
 
         mGyro = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
@@ -143,6 +156,9 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             xValue.setText("xValue : " + sensorEvent.values[0]);
             yValue.setText("yValue : " + sensorEvent.values[1]);
             zValue.setText("zValue : " + sensorEvent.values[2]);
+            yval = sensorEvent.values[1];
+            zval = sensorEvent.values[2];
+
         } else if(sensor.getType() == Sensor.TYPE_GYROSCOPE){
             xGyroValue.setText("xGValue : " + sensorEvent.values[0]);
             yGyroValue.setText("yGValue : " + sensorEvent.values[1]);
@@ -157,6 +173,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         }
         else if(sensor.getType() == Sensor.TYPE_LIGHT){
             light.setText("Light : " + sensorEvent.values[0]);
+            lightval = sensorEvent.values[0];
 
         }
         else if(sensor.getType() == Sensor.TYPE_PRESSURE){
@@ -170,6 +187,20 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         else if(sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
             temp.setText("Temperature : " + sensorEvent.values[0]);
 
+        }
+        else if (sensor.getType() == Sensor.TYPE_PROXIMITY){
+            prox.setText("Proximity : " + sensorEvent.values[0]);
+            proxval = sensorEvent.values[0];
+            detect();
+        }
+    }
+
+    public void detect(){
+        int inclination = (int) Math.round(Math.toDegrees(Math.acos(zval)));
+        if((proxval<1)&&(lightval<2)&&(yval<-0.6)&&( (inclination>75)||(inclination<100))){
+            pocket.setText("Yes");
+        } else {
+            pocket.setText("No");
         }
     }
 }
