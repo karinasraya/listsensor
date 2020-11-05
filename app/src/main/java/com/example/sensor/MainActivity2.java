@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,7 +20,11 @@ import com.opencsv.CSVWriter;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity2 extends AppCompatActivity implements SensorEventListener {
@@ -28,14 +33,23 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
     private Sensor accelerometer,mGyro,mMagno,mLight,mPressure,mTemp,mHumi,proximity;
     TextView xValue,yValue,zValue,xGyroValue,yGyroValue,zGyroValue,xMagnoValue,yMagnoValue,zMagnoValue,light,pressure,temp,humi,prox,pocket;
     private Button export;
-    float zval,yval,proxval,lightval;
-    String csv = (Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyCsvFile.csv");
+    float xval,zval,yval,proxval,lightval;
+    String csv;
     List<String[]> data = new ArrayList<String[]>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+        Date date = Calendar.getInstance().getTime();
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+        String currentDate = dateFormat.format(date);
+        String currentTime = timeFormat.format(date);
+        csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + ".csv");
+
+        Log.d(TAG, "onCreate: " + csv);
 
         xValue = (TextView) findViewById(R.id.xValue);
         yValue = (TextView) findViewById(R.id.yValue);
@@ -63,6 +77,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                 try {
                     writer = new CSVWriter(new FileWriter(csv));
                     writer.writeAll(data);
+                    Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                     writer.close();
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -166,9 +181,10 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             xValue.setText("xValue : " + sensorEvent.values[0]);
             yValue.setText("yValue : " + sensorEvent.values[1]);
             zValue.setText("zValue : " + sensorEvent.values[2]);
+            xval = sensorEvent.values[0];
             yval = sensorEvent.values[1];
             zval = sensorEvent.values[2];
-            data.add(new String[]{xValue.getText().toString(),yValue.getText().toString(),zValue.getText().toString()});
+            data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval)});
 
         } else if(sensor.getType() == Sensor.TYPE_GYROSCOPE){
             xGyroValue.setText("xGValue : " + sensorEvent.values[0]);
