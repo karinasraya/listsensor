@@ -152,13 +152,13 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/tutup"
+        android:id="@+id/export"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         style="@style/Widget.AppCompat.Button.Colored"
-        android:text="Tutup"
+        android:text="Export"
         />
 
 </RelativeLayout>

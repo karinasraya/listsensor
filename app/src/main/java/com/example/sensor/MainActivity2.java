@@ -6,6 +6,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,14 +15,22 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.sensor.R;
+import com.opencsv.CSVWriter;
+
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity2 extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = "MainActivity2";
     private SensorManager sensorManager;
     private Sensor accelerometer,mGyro,mMagno,mLight,mPressure,mTemp,mHumi,proximity;
     TextView xValue,yValue,zValue,xGyroValue,yGyroValue,zGyroValue,xMagnoValue,yMagnoValue,zMagnoValue,light,pressure,temp,humi,prox,pocket;
-    private Button tutup;
+    private Button export;
     float zval,yval,proxval,lightval;
+    String csv = (Environment.getExternalStorageDirectory().getAbsolutePath() + "/MyCsvFile.csv");
+    List<String[]> data = new ArrayList<String[]>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,11 +41,9 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         yValue = (TextView) findViewById(R.id.yValue);
         zValue = (TextView) findViewById(R.id.zValue);
 
-
         xGyroValue = (TextView) findViewById(R.id.xGyroValue);
         yGyroValue = (TextView) findViewById(R.id.yGyroValue);
         zGyroValue = (TextView) findViewById(R.id.zGyroValue);
-//
         xMagnoValue = (TextView) findViewById(R.id.xMagnoValue);
         yMagnoValue = (TextView) findViewById(R.id.yMagnoValue);
         zMagnoValue = (TextView) findViewById(R.id.zMagnoValue);
@@ -47,9 +54,21 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         humi = (TextView) findViewById(R.id.humi);
         prox = (TextView)findViewById(R.id.proxi);
         pocket = (TextView)findViewById(R.id.pocket);
+        export = (Button)findViewById(R.id.export);
 
-        tutup = (Button)findViewById(R.id.tutup);
-        tutup.setOnClickListener(operasi);
+        export.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                CSVWriter writer = null;
+                try {
+                    writer = new CSVWriter(new FileWriter(csv));
+                    writer.writeAll(data);
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
 
         Log.d(TAG, "onCreate: Initializing Sensor Services");
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -104,7 +123,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         else{
             light.setText("Light Not Supported");
         }
-//
+
         mPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
         if(mPressure != null){
             sensorManager.registerListener(MainActivity2.this,mPressure,SensorManager.SENSOR_DELAY_NORMAL);
@@ -134,15 +153,6 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
 
     }
 
-    View.OnClickListener operasi = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()) {
-                case R.id.tutup:finish();break;
-            }
-        }
-    };
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
 
@@ -158,6 +168,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             zValue.setText("zValue : " + sensorEvent.values[2]);
             yval = sensorEvent.values[1];
             zval = sensorEvent.values[2];
+            data.add(new String[]{xValue.getText().toString(),yValue.getText().toString(),zValue.getText().toString()});
 
         } else if(sensor.getType() == Sensor.TYPE_GYROSCOPE){
             xGyroValue.setText("xGValue : " + sensorEvent.values[0]);
