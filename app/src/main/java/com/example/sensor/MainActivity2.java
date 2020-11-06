@@ -43,7 +43,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         setContentView(R.layout.activity_main2);
 
         Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         String currentDate = dateFormat.format(date);
         String currentTime = timeFormat.format(date);
