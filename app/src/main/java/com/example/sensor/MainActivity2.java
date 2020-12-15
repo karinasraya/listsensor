@@ -207,6 +207,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     // for ActivityCompat#requestPermissions for more details.
                     return;
                 }
+                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, ll);
                 data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval),String.valueOf(lati),String.valueOf(longi)});
                 Log.d(TAG, "MASUK GAN");
             }
