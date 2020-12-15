@@ -1,10 +1,15 @@
 package com.example.sensor;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -14,6 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.sensor.R;
 import com.opencsv.CSVWriter;
@@ -34,6 +40,8 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
     TextView xValue,yValue,zValue,xGyroValue,yGyroValue,zGyroValue,xMagnoValue,yMagnoValue,zMagnoValue,light,pressure,temp,humi,prox,pocket;
     private Button export;
     float xval,zval,yval,proxval,lightval;
+    double lati,longi;
+    boolean inpocket;
     String csv;
     List<String[]> data = new ArrayList<String[]>();
 
@@ -184,7 +192,24 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             xval = sensorEvent.values[0];
             yval = sensorEvent.values[1];
             zval = sensorEvent.values[2];
-            data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval)});
+            int inclination = (int) Math.round(Math.toDegrees(Math.acos(zval)));
+            if((proxval<1)&&(lightval<2)&&(yval<-0.6)&&( (inclination>75)||(inclination<100))){
+                LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+                LocationListener ll = new lokasiListener();
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval),String.valueOf(lati),String.valueOf(longi)});
+                Log.d(TAG, "MASUK GAN");
+            }
 
         } else if(sensor.getType() == Sensor.TYPE_GYROSCOPE){
             xGyroValue.setText("xGValue : " + sensorEvent.values[0]);
@@ -226,8 +251,31 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         int inclination = (int) Math.round(Math.toDegrees(Math.acos(zval)));
         if((proxval<1)&&(lightval<2)&&(yval<-0.6)&&( (inclination>75)||(inclination<100))){
             pocket.setText("Yes");
+            inpocket = true;
         } else {
             pocket.setText("No");
+            inpocket = false;
+        }
+    }
+
+    private class lokasiListener implements LocationListener{
+
+        @Override
+        public void onLocationChanged(Location location) {
+            lati = location.getLatitude();
+            longi = location.getLongitude();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
         }
     }
 }
