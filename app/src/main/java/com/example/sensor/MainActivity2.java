@@ -22,6 +22,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.sensor.R;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.opencsv.CSVWriter;
 
 import java.io.FileWriter;
@@ -36,12 +39,13 @@ import java.util.List;
 public class MainActivity2 extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = "MainActivity2";
     private SensorManager sensorManager;
-    private Sensor accelerometer,mGyro,mMagno,mLight,mPressure,mTemp,mHumi,proximity;
-    TextView xValue,yValue,zValue,xGyroValue,yGyroValue,zGyroValue,xMagnoValue,yMagnoValue,zMagnoValue,light,pressure,temp,humi,prox,pocket;
+    private Sensor accelerometer, mGyro, mMagno, mLight, mPressure, mTemp, mHumi, proximity;
+    TextView xValue, yValue, zValue, xGyroValue, yGyroValue, zGyroValue, xMagnoValue, yMagnoValue, zMagnoValue, light, pressure, temp, humi, prox, pocket;
     private Button export;
-    float xval,zval,yval,proxval,lightval;
-    double lati,longi;
+    float xval, zval, yval, proxval, lightval;
+    double lati, longi;
     boolean inpocket;
+    FusedLocationProviderClient mFusedLocation;
     String csv;
     List<String[]> data = new ArrayList<String[]>();
 
@@ -74,9 +78,9 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         pressure = (TextView) findViewById(R.id.pressure);
         temp = (TextView) findViewById(R.id.temp);
         humi = (TextView) findViewById(R.id.humi);
-        prox = (TextView)findViewById(R.id.proxi);
-        pocket = (TextView)findViewById(R.id.pocket);
-        export = (Button)findViewById(R.id.export);
+        prox = (TextView) findViewById(R.id.proxi);
+        pocket = (TextView) findViewById(R.id.pocket);
+        export = (Button) findViewById(R.id.export);
 
         export.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -97,80 +101,72 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-        if(accelerometer != null){
-            sensorManager.registerListener(MainActivity2.this,accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+        if (accelerometer != null) {
+            sensorManager.registerListener(MainActivity2.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
             Log.d(TAG, "onCreate: Registered accelerometer listener");
-        }
-        else{
+        } else {
             xValue.setText("Accelerometer Not Supported");
             yValue.setText("Accelerometer Not Supported");
             zValue.setText("Accelerometer Not Supported");
         }
 
         proximity = sensorManager.getDefaultSensor(Sensor.TYPE_PROXIMITY);
-        if(proximity != null){
-            sensorManager.registerListener(MainActivity2.this,proximity,SensorManager.SENSOR_DELAY_NORMAL);
+        if (proximity != null) {
+            sensorManager.registerListener(MainActivity2.this, proximity, SensorManager.SENSOR_DELAY_NORMAL);
             Log.d(TAG, "onCreate: Registered Proximity listener");
-        }
-        else{
+        } else {
             prox.setText("Proximity Not Supported");
         }
 
         mGyro = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        if(mGyro != null){
-            sensorManager.registerListener(MainActivity2.this,mGyro,SensorManager.SENSOR_DELAY_NORMAL);
+        if (mGyro != null) {
+            sensorManager.registerListener(MainActivity2.this, mGyro, SensorManager.SENSOR_DELAY_NORMAL);
             Log.d(TAG, "onCreate: Registered Gyro listener");
-        }
-        else{
+        } else {
             xGyroValue.setText("mGyro Not Supported");
             yGyroValue.setText("mGyro Not Supported");
             zGyroValue.setText("mGyro Not Supported");
         }
 
         mMagno = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        if(mMagno != null){
-            sensorManager.registerListener(MainActivity2.this,mMagno,SensorManager.SENSOR_DELAY_NORMAL);
+        if (mMagno != null) {
+            sensorManager.registerListener(MainActivity2.this, mMagno, SensorManager.SENSOR_DELAY_NORMAL);
             Log.d(TAG, "onCreate: Registered Magno listener");
-        }
-        else{
+        } else {
             xMagnoValue.setText("Magno Not Supported");
             yMagnoValue.setText("Magno Not Supported");
             zMagnoValue.setText("Magno Not Supported");
         }
 
         mLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
-        if(mLight != null){
-            sensorManager.registerListener(MainActivity2.this,mLight,SensorManager.SENSOR_DELAY_NORMAL);
+        if (mLight != null) {
+            sensorManager.registerListener(MainActivity2.this, mLight, SensorManager.SENSOR_DELAY_NORMAL);
             Log.d(TAG, "onCreate: Registered Light listener");
-        }
-        else{
+        } else {
             light.setText("Light Not Supported");
         }
 
         mPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-        if(mPressure != null){
-            sensorManager.registerListener(MainActivity2.this,mPressure,SensorManager.SENSOR_DELAY_NORMAL);
+        if (mPressure != null) {
+            sensorManager.registerListener(MainActivity2.this, mPressure, SensorManager.SENSOR_DELAY_NORMAL);
             Log.d(TAG, "onCreate: Registered Pressure listener");
-        }
-        else{
+        } else {
             pressure.setText("Pressure Not Supported");
         }
 
         mTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        if(mTemp != null){
-            sensorManager.registerListener(MainActivity2.this,mTemp,SensorManager.SENSOR_DELAY_NORMAL);
+        if (mTemp != null) {
+            sensorManager.registerListener(MainActivity2.this, mTemp, SensorManager.SENSOR_DELAY_NORMAL);
             Log.d(TAG, "onCreate: Registered Temp listener");
-        }
-        else{
+        } else {
             temp.setText("Temp Not Supported");
         }
 
         mHumi = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-        if(mHumi != null){
-            sensorManager.registerListener(MainActivity2.this,mHumi,SensorManager.SENSOR_DELAY_NORMAL);
+        if (mHumi != null) {
+            sensorManager.registerListener(MainActivity2.this, mHumi, SensorManager.SENSOR_DELAY_NORMAL);
             Log.d(TAG, "onCreate: Registered Humi listener");
-        }
-        else{
+        } else {
             humi.setText("Humi Not Supported");
         }
 
@@ -184,7 +180,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         Sensor sensor = sensorEvent.sensor;
-        if(sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+        if (sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             Log.d(TAG, "onSensorChanged: X:" + sensorEvent.values[0] + "Y: " + sensorEvent.values[1] + "Z: " + sensorEvent.values[2]);
             xValue.setText("xValue : " + sensorEvent.values[0]);
             yValue.setText("yValue : " + sensorEvent.values[1]);
@@ -193,21 +189,24 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             yval = sensorEvent.values[1];
             zval = sensorEvent.values[2];
             int inclination = (int) Math.round(Math.toDegrees(Math.acos(zval)));
-            if((proxval<1)&&(lightval<2)&&(yval<-0.6)&&( (inclination>75)||(inclination<100))){
-                LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-                LocationListener ll = new lokasiListener();
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                        && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    // TODO: Consider calling
-                    //    ActivityCompat#requestPermissions
-                    // here to request the missing permissions, and then overriding
-                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                    //                                          int[] grantResults)
-                    // to handle the case where the user grants the permission. See the documentation
-                    // for ActivityCompat#requestPermissions for more details.
+            if ((proxval < 1) && (lightval < 2) && (yval < -0.6) && ((inclination > 75) || (inclination < 100))) {
+//                data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval)});
+                mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    Log.d(TAG,"udaa");
                     return;
                 }
-                lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 5, ll);
+                mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        if (location != null) {
+                            // Do it all with location
+                            Log.d(TAG, "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
+                            lati = location.getLatitude();
+                            longi = location.getLongitude();
+                        }
+                    }
+                });
                 data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval),String.valueOf(lati),String.valueOf(longi)});
                 Log.d(TAG, "MASUK GAN");
             }
@@ -256,27 +255,6 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         } else {
             pocket.setText("No");
             inpocket = false;
-        }
-    }
-
-    private class lokasiListener implements LocationListener{
-
-        @Override
-        public void onLocationChanged(Location location) {
-            lati = location.getLatitude();
-            longi = location.getLongitude();
-        }
-
-        @Override
-        public void onStatusChanged(String provider, int status, Bundle extras) {
-        }
-
-        @Override
-        public void onProviderEnabled(String provider) {
-        }
-
-        @Override
-        public void onProviderDisabled(String provider) {
         }
     }
 }
