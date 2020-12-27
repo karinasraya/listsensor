@@ -14,17 +14,15 @@ import android.widget.ListView;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private Button ceksensor;
+    private Button ceksensor, listsensor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        SensorManager sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        List<Sensor> allSensor = sensorManager.getSensorList(Sensor.TYPE_ALL);
-        ListView list = (ListView) findViewById(R.id.list);
-        list.setAdapter(new MySensorsAdapter(this, R.layout.row_item, allSensor));
+        listsensor = (Button)findViewById(R.id.SensorAndroid);
         ceksensor = (Button)findViewById(R.id.ceksensor);
+        listsensor.setOnClickListener(operasi);
         ceksensor.setOnClickListener(operasi);
     }
 
@@ -33,12 +31,18 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View view) {
             switch (view.getId()) {
                 case R.id.ceksensor:pindah();break;
+                case R.id.SensorAndroid:pindah2();break;
             }
         }
     };
 
     private void pindah() {
         Intent intent = new Intent(MainActivity.this, MainActivity2.class);
+        startActivity(intent);
+    }
+
+    private void pindah2() {
+        Intent intent = new Intent(MainActivity.this, MainActivity3.class);
         startActivity(intent);
     }
 }

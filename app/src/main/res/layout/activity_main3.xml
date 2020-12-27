@@ -8,23 +8,12 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity3">
 
-    <Button
-        android:id="@+id/SensorAndroid"
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Sensor Android"
-        android:layout_centerInParent="true"/>
-
-    <Button
-        android:id="@+id/ceksensor"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/SensorAndroid"
-        android:layout_marginTop="10dp"
-        style="@style/Widget.AppCompat.Button.Colored"
-        android:text="Perekaman Aktivitas"
-        />
+        android:id="@+id/list">
+    </ListView>
 
 </RelativeLayout>

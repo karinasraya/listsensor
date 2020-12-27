@@ -39,12 +39,12 @@ import java.util.List;
 public class MainActivity2 extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = "MainActivity2";
     private SensorManager sensorManager;
-    private Sensor accelerometer, mGyro, mMagno, mLight, mPressure, mTemp, mHumi, proximity;
-    TextView xValue, yValue, zValue, xGyroValue, yGyroValue, zGyroValue, xMagnoValue, yMagnoValue, zMagnoValue, light, pressure, temp, humi, prox, pocket;
+    private Sensor accelerometer, mLight, proximity;
+    TextView xValue, yValue, zValue, light, prox, pocket;
     private Button export;
     float xval, zval, yval, proxval, lightval;
     double lati, longi;
-    boolean inpocket;
+    int counter;
     FusedLocationProviderClient mFusedLocation;
     String csv;
     List<String[]> data = new ArrayList<String[]>();
@@ -67,19 +67,10 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         yValue = (TextView) findViewById(R.id.yValue);
         zValue = (TextView) findViewById(R.id.zValue);
 
-        xGyroValue = (TextView) findViewById(R.id.xGyroValue);
-        yGyroValue = (TextView) findViewById(R.id.yGyroValue);
-        zGyroValue = (TextView) findViewById(R.id.zGyroValue);
-        xMagnoValue = (TextView) findViewById(R.id.xMagnoValue);
-        yMagnoValue = (TextView) findViewById(R.id.yMagnoValue);
-        zMagnoValue = (TextView) findViewById(R.id.zMagnoValue);
-
         light = (TextView) findViewById(R.id.light);
-        pressure = (TextView) findViewById(R.id.pressure);
-        temp = (TextView) findViewById(R.id.temp);
-        humi = (TextView) findViewById(R.id.humi);
         prox = (TextView) findViewById(R.id.proxi);
         pocket = (TextView) findViewById(R.id.pocket);
+        pocket.setText("No");
         export = (Button) findViewById(R.id.export);
 
         export.setOnClickListener(new View.OnClickListener() {
@@ -118,26 +109,6 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             prox.setText("Proximity Not Supported");
         }
 
-        mGyro = sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-        if (mGyro != null) {
-            sensorManager.registerListener(MainActivity2.this, mGyro, SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d(TAG, "onCreate: Registered Gyro listener");
-        } else {
-            xGyroValue.setText("mGyro Not Supported");
-            yGyroValue.setText("mGyro Not Supported");
-            zGyroValue.setText("mGyro Not Supported");
-        }
-
-        mMagno = sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-        if (mMagno != null) {
-            sensorManager.registerListener(MainActivity2.this, mMagno, SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d(TAG, "onCreate: Registered Magno listener");
-        } else {
-            xMagnoValue.setText("Magno Not Supported");
-            yMagnoValue.setText("Magno Not Supported");
-            zMagnoValue.setText("Magno Not Supported");
-        }
-
         mLight = sensorManager.getDefaultSensor(Sensor.TYPE_LIGHT);
         if (mLight != null) {
             sensorManager.registerListener(MainActivity2.this, mLight, SensorManager.SENSOR_DELAY_NORMAL);
@@ -146,35 +117,10 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             light.setText("Light Not Supported");
         }
 
-        mPressure = sensorManager.getDefaultSensor(Sensor.TYPE_PRESSURE);
-        if (mPressure != null) {
-            sensorManager.registerListener(MainActivity2.this, mPressure, SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d(TAG, "onCreate: Registered Pressure listener");
-        } else {
-            pressure.setText("Pressure Not Supported");
-        }
-
-        mTemp = sensorManager.getDefaultSensor(Sensor.TYPE_AMBIENT_TEMPERATURE);
-        if (mTemp != null) {
-            sensorManager.registerListener(MainActivity2.this, mTemp, SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d(TAG, "onCreate: Registered Temp listener");
-        } else {
-            temp.setText("Temp Not Supported");
-        }
-
-        mHumi = sensorManager.getDefaultSensor(Sensor.TYPE_RELATIVE_HUMIDITY);
-        if (mHumi != null) {
-            sensorManager.registerListener(MainActivity2.this, mHumi, SensorManager.SENSOR_DELAY_NORMAL);
-            Log.d(TAG, "onCreate: Registered Humi listener");
-        } else {
-            humi.setText("Humi Not Supported");
-        }
-
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
     }
 
     @Override
@@ -190,10 +136,9 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             zval = sensorEvent.values[2];
             int inclination = (int) Math.round(Math.toDegrees(Math.acos(zval)));
             if ((proxval < 1) && (lightval < 2) && (yval < -0.6) && ((inclination > 75) || (inclination < 100))) {
-//                data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval)});
+                pocket.setText("Yes");
                 mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    Log.d(TAG,"udaa");
                     return;
                 }
                 mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
@@ -209,52 +154,29 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                 });
                 data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval),String.valueOf(lati),String.valueOf(longi)});
                 Log.d(TAG, "MASUK GAN");
+                counter = counter + 1;
+                if (counter==2042){
+                    CSVWriter writer = null;
+                    try {
+                        writer = new CSVWriter(new FileWriter(csv));
+                        writer.writeAll(data);
+                        Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
+                        writer.close();
+                        counter=0;
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
-
-        } else if(sensor.getType() == Sensor.TYPE_GYROSCOPE){
-            xGyroValue.setText("xGValue : " + sensorEvent.values[0]);
-            yGyroValue.setText("yGValue : " + sensorEvent.values[1]);
-            zGyroValue.setText("zGValue : " + sensorEvent.values[2]);
-
-        }
-        else if(sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD){
-            xMagnoValue.setText("xMValue : " + sensorEvent.values[0]);
-            yMagnoValue.setText("yMValue : " + sensorEvent.values[1]);
-            zMagnoValue.setText("zMValue : " + sensorEvent.values[2]);
-
         }
         else if(sensor.getType() == Sensor.TYPE_LIGHT){
             light.setText("Light : " + sensorEvent.values[0]);
             lightval = sensorEvent.values[0];
-
-        }
-        else if(sensor.getType() == Sensor.TYPE_PRESSURE){
-            pressure.setText("Pressure : " + sensorEvent.values[0]);
-
-        }
-        else if(sensor.getType() == Sensor.TYPE_RELATIVE_HUMIDITY){
-            humi.setText("Humidity : " + sensorEvent.values[0]);
-
-        }
-        else if(sensor.getType() == Sensor.TYPE_AMBIENT_TEMPERATURE){
-            temp.setText("Temperature : " + sensorEvent.values[0]);
-
         }
         else if (sensor.getType() == Sensor.TYPE_PROXIMITY){
             prox.setText("Proximity : " + sensorEvent.values[0]);
             proxval = sensorEvent.values[0];
-            detect();
         }
     }
 
-    public void detect(){
-        int inclination = (int) Math.round(Math.toDegrees(Math.acos(zval)));
-        if((proxval<1)&&(lightval<2)&&(yval<-0.6)&&( (inclination>75)||(inclination<100))){
-            pocket.setText("Yes");
-            inpocket = true;
-        } else {
-            pocket.setText("No");
-            inpocket = false;
-        }
-    }
 }
