@@ -27,6 +27,8 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.opencsv.CSVWriter;
 
+import org.json.JSONObject;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -36,8 +38,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity2 extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = "MainActivity2";
+    private ApiInterface mApiInterface;
     private SensorManager sensorManager;
     private Sensor accelerometer, mLight, proximity;
     TextView xValue, yValue, zValue, light, prox, pocket;
@@ -166,6 +173,24 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+//                    Call<PostPutDel> postPhotoCall = mApiInterface.storePhoto(name, filename, photofile, ValueSensor);
+//                    postPhotoCall.enqueue(new Callback<PostPutDel>() {
+//                        @Override
+//                        public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
+//                            if (response.isSuccessful()) {
+//                                PostPutDel storeResult = response.body();
+//                            } else {
+//                                try {
+//                                    String responseBodyString = response.errorBody().string();
+//                                    Log.d(TAG, responseBodyString);
+//                                    JSONObject jsonObject = new JSONObject(responseBodyString);
+//
+//                                    Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+//                                } catch (Exception e) {
+//                                    Log.d(TAG, "Error Body JSON: " + e.getMessage());
+//                                }
+//                            }
+//                        }
                 }
             }
         }
