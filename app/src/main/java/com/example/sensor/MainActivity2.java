@@ -51,7 +51,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
     private Button export;
     float xval, zval, yval, proxval, lightval;
     double lati, longi;
-    int counter;
+    int counter, nomorfile;
     FusedLocationProviderClient mFusedLocation;
     String csv;
     List<String[]> data = new ArrayList<String[]>();
@@ -66,7 +66,8 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
         String currentDate = dateFormat.format(date);
         String currentTime = timeFormat.format(date);
-        csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + ".csv");
+        nomorfile = 1;
+        csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
 
         Log.d(TAG, "onCreate: " + csv);
 
@@ -89,6 +90,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     writer.writeAll(data);
                     Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                     writer.close();
+                    nomorfile = nomorfile+1;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -161,8 +163,10 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                 });
                 data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval),String.valueOf(lati),String.valueOf(longi)});
                 Log.d(TAG, "MASUK GAN");
+                Log.d(TAG, String.valueOf(counter));
                 counter = counter + 1;
                 if (counter==2042){
+                    Log.d(TAG, "Buat file tanpa stop");
                     CSVWriter writer = null;
                     try {
                         writer = new CSVWriter(new FileWriter(csv));
@@ -170,6 +174,8 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                         writer.close();
                         counter=0;
+                        Log.d(TAG, String.valueOf(nomorfile));
+                        nomorfile = nomorfile+1;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
