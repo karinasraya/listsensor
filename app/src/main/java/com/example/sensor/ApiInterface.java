@@ -19,7 +19,7 @@ public interface ApiInterface {
 //    Call<PostPutDel> showPhoto(@Path("filename") String filename);
 
     @FormUrlEncoded
-    @POST("store")
-    Call<PostPutDel> storePhoto(@Field("file")CSVWriter writer,
+    @POST("proses")
+    Call<PostPutDel> prosesFile(@Field("file") CSVWriter writer,
                                 @Field("keterangan") String keterangan);
 }

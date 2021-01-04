@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
     public static final String WEB_URL = "https://laravelkomber.azurewebsites.net/";
-    public static final String BASE_URL = "https://laravelkomber.azurewebsites.net/upload/proses";
+    public static final String BASE_URL = "https://laravelkomber.azurewebsites.net/upload/";
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
