@@ -186,7 +186,6 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         Log.d(TAG, String.valueOf(nomorfile));
                         nomorfile = nomorfile+1;
                         data.clear();
-//                        writer = null;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

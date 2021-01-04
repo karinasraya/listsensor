@@ -8,8 +8,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    public static final String WEB_URL = "http://34.239.157.61:80/";
-    public static final String BASE_URL = "http://34.239.157.61:80/api/";
+    public static final String WEB_URL = "https://laravelkomber.azurewebsites.net/";
+    public static final String BASE_URL = "https://laravelkomber.azurewebsites.net/upload/proses";
     private static Retrofit retrofit = null;
 
     public static Retrofit getClient() {
