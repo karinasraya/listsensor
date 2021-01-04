@@ -10,8 +10,11 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.FileUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -39,6 +42,9 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -64,6 +70,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+        mApiInterface = ApiClient.getClient().create(ApiInterface.class);
         nomorfile = 1;
         counter = 1;
         header.add(new String[]{"accelerometer_X","accelerometer_Y","accelerometer_Z","Latitude","Longitude"});
@@ -95,31 +102,41 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     writer.writeAll(header);
                     writer.writeAll(data);
                     file = new File(csv);
-//                    Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(file, "tes");
-//                    postPhotoCall.enqueue(new Callback<PostPutDel>() {
-//                        @Override
-//                        public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
-//                            if (response.isSuccessful()) {
-//                                PostPutDel storeResult = response.body();
-//                            } else {
-//                                try {
-//                                    String responseBodyString = response.errorBody().string();
-//                                    Log.d(TAG, responseBodyString);
-//                                    JSONObject jsonObject = new JSONObject(responseBodyString);
-//
-//                                    Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-//                                } catch (Exception e) {
-//                                    Log.d(TAG, "Error Body JSON: " + e.getMessage());
-//                                }
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(Call<PostPutDel> call, Throwable t) {
-//                            Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-//                            Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
-//                        }
-//                    });
+                    Uri myUri = Uri.parse(csv);
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("text/csv"),file);
+                    MultipartBody.Part finalfile = MultipartBody.Part.createFormData("file",file.getName(),requestFile);
+                    String deviceString = Build.DEVICE;
+                    RequestBody device = RequestBody.create(MultipartBody.FORM, deviceString);
+                    Log.d(TAG, "file: " + file);
+                    Log.d(TAG, "final file: " + finalfile);
+                    Log.d(TAG, "device string: " + deviceString);
+                    Log.d(TAG, "device: " + device);
+                    Log.d(TAG, "mapi: " + mApiInterface);
+                    Call<PostPutDel> postData = mApiInterface.prosesFile(finalfile, device);
+                    postData.enqueue(new Callback<PostPutDel>() {
+                        @Override
+                        public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
+                            if (response.isSuccessful()) {
+                                PostPutDel storeResult = response.body();
+                            } else {
+                                try {
+                                    String responseBodyString = response.errorBody().string();
+                                    Log.d(TAG, responseBodyString);
+                                    JSONObject jsonObject = new JSONObject(responseBodyString);
+
+                                    Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                    Log.d(TAG, "Error Body JSON: " + e.getMessage());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<PostPutDel> call, Throwable t) {
+                            Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
+                        }
+                    });
                     Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                     writer.close();
                     nomorfile = nomorfile+1;
@@ -214,31 +231,36 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         writer.writeAll(header);
                         writer.writeAll(data);
                         file = new File(csv);
-//                        Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(file, "tes");
-//                        postPhotoCall.enqueue(new Callback<PostPutDel>() {
-//                            @Override
-//                            public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
-//                                if (response.isSuccessful()) {
-//                                    PostPutDel storeResult = response.body();
-//                                } else {
-//                                    try {
-//                                        String responseBodyString = response.errorBody().string();
-//                                        Log.d(TAG, responseBodyString);
-//                                        JSONObject jsonObject = new JSONObject(responseBodyString);
-//
-//                                        Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-//                                    } catch (Exception e) {
-//                                        Log.d(TAG, "Error Body JSON: " + e.getMessage());
-//                                    }
-//                                }
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<PostPutDel> call, Throwable t) {
-//                                Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-//                                Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
-//                            }
-//                        });
+                        Uri myUri = Uri.parse(csv);
+                        RequestBody requestFile = RequestBody.create(MediaType.parse("text/csv"),file);
+                        MultipartBody.Part finalfile = MultipartBody.Part.createFormData("file",file.getName(),requestFile);
+                        String deviceString = Build.DEVICE;
+                        RequestBody device = RequestBody.create(MultipartBody.FORM, deviceString);
+                        Call<PostPutDel> postData = mApiInterface.prosesFile(finalfile, device);
+                        postData.enqueue(new Callback<PostPutDel>() {
+                            @Override
+                            public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
+                                if (response.isSuccessful()) {
+                                    PostPutDel storeResult = response.body();
+                                } else {
+                                    try {
+                                        String responseBodyString = response.errorBody().string();
+                                        Log.d(TAG, responseBodyString);
+                                        JSONObject jsonObject = new JSONObject(responseBodyString);
+
+                                        Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                                    } catch (Exception e) {
+                                        Log.d(TAG, "Error Body JSON: " + e.getMessage());
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<PostPutDel> call, Throwable t) {
+                                Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
+                            }
+                        });
                         Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                         writer.close();
                         counter=0;
