@@ -89,6 +89,31 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
                     writer = new CSVWriter(new FileWriter(csv,false));
                     writer.writeAll(data);
+                    Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(writer, "tes");
+                    postPhotoCall.enqueue(new Callback<PostPutDel>() {
+                        @Override
+                        public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
+                            if (response.isSuccessful()) {
+                                PostPutDel storeResult = response.body();
+                            } else {
+                                try {
+                                    String responseBodyString = response.errorBody().string();
+                                    Log.d(TAG, responseBodyString);
+                                    JSONObject jsonObject = new JSONObject(responseBodyString);
+
+                                    Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                                } catch (Exception e) {
+                                    Log.d(TAG, "Error Body JSON: " + e.getMessage());
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<PostPutDel> call, Throwable t) {
+                            Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+                            Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
+                        }
+                    });
                     Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                     writer.close();
                     nomorfile = nomorfile+1;
@@ -180,33 +205,33 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
                         writer = new CSVWriter(new FileWriter(csv, false));
                         writer.writeAll(data);
+                        Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(writer, "tes");
+                        postPhotoCall.enqueue(new Callback<PostPutDel>() {
+                            @Override
+                            public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
+                                if (response.isSuccessful()) {
+                                    PostPutDel storeResult = response.body();
+                                } else {
+                                    try {
+                                        String responseBodyString = response.errorBody().string();
+                                        Log.d(TAG, responseBodyString);
+                                        JSONObject jsonObject = new JSONObject(responseBodyString);
+
+                                        Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+                                    } catch (Exception e) {
+                                        Log.d(TAG, "Error Body JSON: " + e.getMessage());
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<PostPutDel> call, Throwable t) {
+                                Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+                                Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
+                            }
+                        });
                         Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                         writer.close();
-//                        Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(writer, "tes");
-//                        postPhotoCall.enqueue(new Callback<PostPutDel>() {
-//                                                  @Override
-//                                                  public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
-//                                                      if (response.isSuccessful()) {
-//                                                          PostPutDel storeResult = response.body();
-//                                                      } else {
-//                                                          try {
-//                                                              String responseBodyString = response.errorBody().string();
-//                                                              Log.d(TAG, responseBodyString);
-//                                                              JSONObject jsonObject = new JSONObject(responseBodyString);
-//
-//                                                              Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-//                                                          } catch (Exception e) {
-//                                                              Log.d(TAG, "Error Body JSON: " + e.getMessage());
-//                                                          }
-//                                                      }
-//                                                  }
-//
-//                            @Override
-//                            public void onFailure(Call<PostPutDel> call, Throwable t) {
-//                                Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-//                                Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
-//                            }
-//                        });
                         counter=0;
                         Log.d(TAG, String.valueOf(nomorfile));
                         nomorfile = nomorfile+1;
