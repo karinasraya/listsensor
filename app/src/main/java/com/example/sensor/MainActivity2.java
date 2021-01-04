@@ -67,6 +67,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         String currentDate = dateFormat.format(date);
         String currentTime = timeFormat.format(date);
         nomorfile = 1;
+        counter = 1;
         csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
 
         Log.d(TAG, "onCreate: " + csv);
@@ -164,7 +165,8 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                 data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval),String.valueOf(lati),String.valueOf(longi)});
                 Log.d(TAG, "MASUK GAN");
                 Log.d(TAG, String.valueOf(counter));
-                counter = counter + 1;
+                Log.d(TAG, String.valueOf(nomorfile));
+
                 if (counter==2042){
                     Log.d(TAG, "Buat file tanpa stop");
                     CSVWriter writer = null;
@@ -173,7 +175,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         writer.writeAll(data);
                         Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                         writer.close();
-                        counter=0;
+                        counter=1;
                         Log.d(TAG, String.valueOf(nomorfile));
                         nomorfile = nomorfile+1;
                     } catch (IOException e) {
@@ -198,6 +200,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
 //                            }
 //                        }
                 }
+                counter = counter + 1;
             }
         }
         else if(sensor.getType() == Sensor.TYPE_LIGHT){
