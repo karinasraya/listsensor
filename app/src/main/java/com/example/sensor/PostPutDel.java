@@ -14,7 +14,7 @@ public class PostPutDel {
         this.status = status;
     }
 
-    public void setDataPhoto(DataSensor dataPhoto) {
+    public void setDataActivity(DataSensor dataActivity) {
         this.dataSensor = dataSensor;
     }
 
@@ -26,7 +26,7 @@ public class PostPutDel {
         return status;
     }
 
-    public DataSensor getDataPhoto() {
+    public DataSensor getDataActivity() {
         return dataSensor;
     }
 

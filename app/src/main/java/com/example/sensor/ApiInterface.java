@@ -12,12 +12,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 
 public interface ApiInterface {
-//    @GET("list")
-//    Call<GetData> listPhoto();
-//
-//    @GET("show/{filename}")
-//    Call<PostPutDel> showPhoto(@Path("filename") String filename);
-
     @FormUrlEncoded
     @POST("proses")
     Call<PostPutDel> prosesFile(@Field("file") CSVWriter writer,
