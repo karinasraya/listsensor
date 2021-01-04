@@ -87,7 +87,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             public void onClick(View view) {
                 CSVWriter writer = null;
                 try {
-                    writer = new CSVWriter(new FileWriter(csv));
+                    writer = new CSVWriter(new FileWriter(csv,false));
                     writer.writeAll(data);
                     Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                     writer.close();
@@ -171,7 +171,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     Log.d(TAG, "Buat file tanpa stop");
                     CSVWriter writer = null;
                     try {
-                        writer = new CSVWriter(new FileWriter(csv));
+                        writer = new CSVWriter(new FileWriter(csv, false));
                         writer.writeAll(data);
                         Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                         writer.close();
