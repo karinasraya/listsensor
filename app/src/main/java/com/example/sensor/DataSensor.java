@@ -10,7 +10,7 @@ public class DataSensor {
     @SerializedName("id")
     private int id;
     @SerializedName("file")
-    private CSVWriter writer;
+    private File writer;
     @SerializedName("keterangan")
     private String keterangan;
 
@@ -20,13 +20,13 @@ public class DataSensor {
         this.id = id;
     }
 
-    public DataSensor(int id, CSVWriter writer, String keterangan) {
+    public DataSensor(int id, File writer, String keterangan) {
         this.id = id;
         this.writer = writer;
         this.keterangan = keterangan;
     }
 
-    public void setFile(CSVWriter writer) {
+    public void setFile(File writer) {
         this.writer = writer;
     }
 
@@ -38,7 +38,7 @@ public class DataSensor {
         return id;
     }
 
-    public CSVWriter getFile() {
+    public File getFile() {
         return writer;
     }
 

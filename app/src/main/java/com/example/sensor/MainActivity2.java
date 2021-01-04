@@ -29,6 +29,7 @@ import com.opencsv.CSVWriter;
 
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -52,6 +53,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
     float xval, zval, yval, proxval, lightval;
     double lati, longi;
     int counter, nomorfile;
+    File file;
     FusedLocationProviderClient mFusedLocation;
     String csv;
     List<String[]> data = new ArrayList<String[]>();
@@ -89,35 +91,37 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
                     writer = new CSVWriter(new FileWriter(csv,false));
                     writer.writeAll(data);
-                    Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(writer, "tes");
-                    postPhotoCall.enqueue(new Callback<PostPutDel>() {
-                        @Override
-                        public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
-                            if (response.isSuccessful()) {
-                                PostPutDel storeResult = response.body();
-                            } else {
-                                try {
-                                    String responseBodyString = response.errorBody().string();
-                                    Log.d(TAG, responseBodyString);
-                                    JSONObject jsonObject = new JSONObject(responseBodyString);
-
-                                    Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-                                } catch (Exception e) {
-                                    Log.d(TAG, "Error Body JSON: " + e.getMessage());
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<PostPutDel> call, Throwable t) {
-                            Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-                            Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
-                        }
-                    });
+                    file = new File(csv);
+//                    Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(file, "tes");
+//                    postPhotoCall.enqueue(new Callback<PostPutDel>() {
+//                        @Override
+//                        public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
+//                            if (response.isSuccessful()) {
+//                                PostPutDel storeResult = response.body();
+//                            } else {
+//                                try {
+//                                    String responseBodyString = response.errorBody().string();
+//                                    Log.d(TAG, responseBodyString);
+//                                    JSONObject jsonObject = new JSONObject(responseBodyString);
+//
+//                                    Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+//                                } catch (Exception e) {
+//                                    Log.d(TAG, "Error Body JSON: " + e.getMessage());
+//                                }
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void onFailure(Call<PostPutDel> call, Throwable t) {
+//                            Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+//                            Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
+//                        }
+//                    });
                     Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                     writer.close();
                     nomorfile = nomorfile+1;
                     data.clear();
+                    file = null;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -205,37 +209,39 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
                         writer = new CSVWriter(new FileWriter(csv, false));
                         writer.writeAll(data);
-                        Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(writer, "tes");
-                        postPhotoCall.enqueue(new Callback<PostPutDel>() {
-                            @Override
-                            public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
-                                if (response.isSuccessful()) {
-                                    PostPutDel storeResult = response.body();
-                                } else {
-                                    try {
-                                        String responseBodyString = response.errorBody().string();
-                                        Log.d(TAG, responseBodyString);
-                                        JSONObject jsonObject = new JSONObject(responseBodyString);
-
-                                        Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
-                                    } catch (Exception e) {
-                                        Log.d(TAG, "Error Body JSON: " + e.getMessage());
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Call<PostPutDel> call, Throwable t) {
-                                Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
-                                Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
-                            }
-                        });
+                        file = new File(csv);
+//                        Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(file, "tes");
+//                        postPhotoCall.enqueue(new Callback<PostPutDel>() {
+//                            @Override
+//                            public void onResponse(Call<PostPutDel> call, Response<PostPutDel> response) {
+//                                if (response.isSuccessful()) {
+//                                    PostPutDel storeResult = response.body();
+//                                } else {
+//                                    try {
+//                                        String responseBodyString = response.errorBody().string();
+//                                        Log.d(TAG, responseBodyString);
+//                                        JSONObject jsonObject = new JSONObject(responseBodyString);
+//
+//                                        Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
+//                                    } catch (Exception e) {
+//                                        Log.d(TAG, "Error Body JSON: " + e.getMessage());
+//                                    }
+//                                }
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<PostPutDel> call, Throwable t) {
+//                                Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+//                                Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
+//                            }
+//                        });
                         Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                         writer.close();
                         counter=0;
                         Log.d(TAG, String.valueOf(nomorfile));
                         nomorfile = nomorfile+1;
                         data.clear();
+                        file = null;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
