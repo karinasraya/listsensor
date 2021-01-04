@@ -61,14 +61,8 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
-        Date date = Calendar.getInstance().getTime();
-        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
-        String currentDate = dateFormat.format(date);
-        String currentTime = timeFormat.format(date);
         nomorfile = 1;
         counter = 1;
-        csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
 
         Log.d(TAG, "onCreate: " + csv);
 
@@ -87,11 +81,18 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             public void onClick(View view) {
                 CSVWriter writer = null;
                 try {
+                    Date date = Calendar.getInstance().getTime();
+                    DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                    DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                    String currentDate = dateFormat.format(date);
+                    String currentTime = timeFormat.format(date);
+                    csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
                     writer = new CSVWriter(new FileWriter(csv,false));
                     writer.writeAll(data);
                     Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                     writer.close();
                     nomorfile = nomorfile+1;
+                    data.clear();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -171,13 +172,21 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     Log.d(TAG, "Buat file tanpa stop");
                     CSVWriter writer = null;
                     try {
+                        Date date = Calendar.getInstance().getTime();
+                        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+                        DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                        String currentDate = dateFormat.format(date);
+                        String currentTime = timeFormat.format(date);
+                        csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
                         writer = new CSVWriter(new FileWriter(csv, false));
                         writer.writeAll(data);
                         Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
                         writer.close();
-                        counter=1;
+                        counter=0;
                         Log.d(TAG, String.valueOf(nomorfile));
                         nomorfile = nomorfile+1;
+                        data.clear();
+//                        writer = null;
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
