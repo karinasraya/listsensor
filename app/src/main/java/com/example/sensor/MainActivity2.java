@@ -57,6 +57,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
     FusedLocationProviderClient mFusedLocation;
     String csv;
     List<String[]> data = new ArrayList<String[]>();
+    List<String[]> header = new ArrayList<String[]>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +66,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
 
         nomorfile = 1;
         counter = 1;
+        header.add(new String[]{"accelerometer_X","accelerometer_Y","accelerometer_Z","Latitude","Longitude"});
 
         Log.d(TAG, "onCreate: " + csv);
 
@@ -90,6 +92,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     String currentTime = timeFormat.format(date);
                     csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
                     writer = new CSVWriter(new FileWriter(csv,false));
+                    writer.writeAll(header);
                     writer.writeAll(data);
                     file = new File(csv);
 //                    Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(file, "tes");
@@ -208,6 +211,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         String currentTime = timeFormat.format(date);
                         csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
                         writer = new CSVWriter(new FileWriter(csv, false));
+                        writer.writeAll(header);
                         writer.writeAll(data);
                         file = new File(csv);
 //                        Call<PostPutDel> postPhotoCall = mApiInterface.prosesFile(file, "tes");
