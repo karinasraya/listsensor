@@ -20,6 +20,6 @@ import retrofit2.http.Path;
 public interface ApiInterface {
     @Multipart
     @POST("proses")
-    Call<PostPutDel> prosesFile(@Part MultipartBody.Part writer,
+    Call<PostPutDel> prosesFile(@Part MultipartBody.Part file,
                                 @Part("keterangan") RequestBody keterangan);
 }

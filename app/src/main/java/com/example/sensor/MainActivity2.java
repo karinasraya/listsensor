@@ -33,8 +33,12 @@ import com.opencsv.CSVWriter;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -59,9 +63,9 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
     float xval, zval, yval, proxval, lightval;
     double lati, longi;
     int counter, nomorfile;
-    File file;
+    File file, file2;
     FusedLocationProviderClient mFusedLocation;
-    String csv;
+    String csv, csv2;
     List<String[]> data = new ArrayList<String[]>();
     List<String[]> header = new ArrayList<String[]>();
 
@@ -103,11 +107,31 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     writer.writeAll(data);
                     file = new File(csv);
                     Uri myUri = Uri.parse(csv);
-                    RequestBody requestFile = RequestBody.create(MediaType.parse("text/csv"),file);
-                    MultipartBody.Part finalfile = MultipartBody.Part.createFormData("file",file.getName(),requestFile);
+                    csv2 = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap2_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
+                    file2 = new File(csv2);
+                    InputStream in = new FileInputStream(file);
+                    try {
+                        OutputStream out = new FileOutputStream(file2);
+                        try {
+                            // Transfer bytes from in to out
+                            byte[] buf = new byte[1024];
+                            int len;
+                            while ((len = in.read(buf)) > 0) {
+                                out.write(buf, 0, len);
+                            }
+                        } finally {
+                            out.close();
+                        }
+                    } finally {
+                        in.close();
+                    }
+                    RequestBody requestFile = RequestBody.create(MediaType.parse("text/csv"),file2);
+                    MultipartBody.Part finalfile = MultipartBody.Part.createFormData("file",file2.getName(),requestFile);
                     String deviceString = Build.DEVICE;
+//                    String deviceString = "Tes";
                     RequestBody device = RequestBody.create(MultipartBody.FORM, deviceString);
-                    Log.d(TAG, "file: " + file);
+//                    RequestBody device = RequestBody.create(MediaType.parse("text/plain"), deviceString);
+                    Log.d(TAG, "file: " + file2);
                     Log.d(TAG, "final file: " + finalfile);
                     Log.d(TAG, "device string: " + deviceString);
                     Log.d(TAG, "device: " + device);
@@ -121,9 +145,8 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                             } else {
                                 try {
                                     String responseBodyString = response.errorBody().string();
-                                    Log.d(TAG, responseBodyString);
+                                    Log.d(TAG, "response: " + responseBodyString);
                                     JSONObject jsonObject = new JSONObject(responseBodyString);
-
                                     Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                                 } catch (Exception e) {
                                     Log.d(TAG, "Error Body JSON: " + e.getMessage());
@@ -232,6 +255,24 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         writer.writeAll(data);
                         file = new File(csv);
                         Uri myUri = Uri.parse(csv);
+                        csv2 = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap2_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
+                        file2 = new File(csv2);
+                        InputStream in = new FileInputStream(file);
+                        try {
+                            OutputStream out = new FileOutputStream(file2);
+                            try {
+                                // Transfer bytes from in to out
+                                byte[] buf = new byte[1024];
+                                int len;
+                                while ((len = in.read(buf)) > 0) {
+                                    out.write(buf, 0, len);
+                                }
+                            } finally {
+                                out.close();
+                            }
+                        } finally {
+                            in.close();
+                        }
                         RequestBody requestFile = RequestBody.create(MediaType.parse("text/csv"),file);
                         MultipartBody.Part finalfile = MultipartBody.Part.createFormData("file",file.getName(),requestFile);
                         String deviceString = Build.DEVICE;
