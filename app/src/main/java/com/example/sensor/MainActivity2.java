@@ -78,6 +78,21 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         nomorfile = 1;
         counter = 1;
         header.add(new String[]{"accelerometer_X","accelerometer_Y","accelerometer_Z","Latitude","Longitude"});
+        mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    // Do it all with location
+                    Log.d(TAG, "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
+                    lati = location.getLatitude();
+                    longi = location.getLongitude();
+                }
+            }
+        });
 
         Log.d(TAG, "onCreate: " + csv);
 
@@ -219,7 +234,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             int inclination = (int) Math.round(Math.toDegrees(Math.acos(zval)));
             if ((proxval < 1) && (lightval < 2) && (yval < -0.6) && ((inclination > 75) || (inclination < 100))) {
                 pocket.setText("Yes");
-                mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
+                data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval),String.valueOf(lati),String.valueOf(longi)});
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
@@ -234,7 +249,6 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         }
                     }
                 });
-                data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval),String.valueOf(lati),String.valueOf(longi)});
                 Log.d(TAG, "MASUK GAN");
                 Log.d(TAG, String.valueOf(counter));
                 Log.d(TAG, String.valueOf(nomorfile));
