@@ -64,6 +64,8 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
     double lati, longi;
     int counter, nomorfile;
     File file, file2;
+    private LocationManager lm;
+    private LocationListener ll;
     FusedLocationProviderClient mFusedLocation;
     String csv, csv2;
     List<String[]> data = new ArrayList<String[]>();
@@ -78,21 +80,20 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         nomorfile = 1;
         counter = 1;
         header.add(new String[]{"accelerometer_X","accelerometer_Y","accelerometer_Z","Latitude","Longitude"});
-        mFusedLocation = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        ll = new lokasiListener();
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-            @Override
-            public void onSuccess(Location location) {
-                if (location != null) {
-                    // Do it all with location
-                    Log.d(TAG, "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
-                    lati = location.getLatitude();
-                    longi = location.getLongitude();
-                }
-            }
-        });
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, ll);
 
         Log.d(TAG, "onCreate: " + csv);
 
@@ -235,20 +236,6 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
             if ((proxval < 1) && (lightval < 2) && (yval < -0.6) && ((inclination > 75) || (inclination < 100))) {
                 pocket.setText("Yes");
                 data.add(new String[]{String.valueOf(xval),String.valueOf(yval),String.valueOf(zval),String.valueOf(lati),String.valueOf(longi)});
-                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-                    return;
-                }
-                mFusedLocation.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        if (location != null) {
-                            // Do it all with location
-                            Log.d(TAG, "Lat : " + location.getLatitude() + " Long : " + location.getLongitude());
-                            lati = location.getLatitude();
-                            longi = location.getLongitude();
-                        }
-                    }
-                });
                 Log.d(TAG, "MASUK GAN");
                 Log.d(TAG, String.valueOf(counter));
                 Log.d(TAG, String.valueOf(nomorfile));
@@ -340,6 +327,28 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
         else if (sensor.getType() == Sensor.TYPE_PROXIMITY){
             prox.setText("Proximity : " + sensorEvent.values[0]);
             proxval = sensorEvent.values[0];
+        }
+    }
+
+    private class lokasiListener implements LocationListener{
+
+        @Override
+        public void onLocationChanged(Location location) {
+//            Toast.makeText(getBaseContext(),"lat: " + location.getLatitude() + " long: " + location.getLongitude(), Toast.LENGTH_LONG).show();
+            lati = location.getLatitude();
+            longi = location.getLongitude();
+        }
+
+        @Override
+        public void onStatusChanged(String provider, int status, Bundle extras) {
+        }
+
+        @Override
+        public void onProviderEnabled(String provider) {
+        }
+
+        @Override
+        public void onProviderDisabled(String provider) {
         }
     }
 
