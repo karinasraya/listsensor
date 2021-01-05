@@ -5,36 +5,32 @@ import com.opencsv.CSVWriter;
 
 import java.io.File;
 
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-
 public class DataSensor {
-
     @SerializedName("file")
-    private MultipartBody.Part file;
+    private File file;
     @SerializedName("keterangan")
-    private RequestBody keterangan;
+    private String keterangan;
 
     public DataSensor() { }
 
-    public DataSensor(MultipartBody.Part writer, RequestBody keterangan) {
-        this.file = writer;
+    public DataSensor(File file, String keterangan) {
+        this.file = file;
         this.keterangan = keterangan;
     }
 
-    public void setFile(MultipartBody.Part file) {
+    public void setFile(File file) {
         this.file = file;
     }
 
-    public void setKeterangan(RequestBody keterangan) {
+    public void setKeterangan(String keterangan) {
         this.keterangan = keterangan;
     }
 
-    public MultipartBody.Part getFile() {
+    public File getFile() {
         return file;
     }
 
-    public RequestBody getKeterangan() {
+    public String getKeterangan() {
         return keterangan;
     }
 

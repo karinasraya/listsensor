@@ -101,13 +101,14 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                     String currentDate = dateFormat.format(date);
                     String currentTime = timeFormat.format(date);
-                    csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
+                    csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap" + ".csv");
                     writer = new CSVWriter(new FileWriter(csv,false));
                     writer.writeAll(header);
                     writer.writeAll(data);
+                    writer.close();
                     file = new File(csv);
                     Uri myUri = Uri.parse(csv);
-                    csv2 = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap2_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
+                    csv2 = (getExternalFilesDir(null).getAbsolutePath() + "/Final_Rekap" + ".csv");
                     file2 = new File(csv2);
                     InputStream in = new FileInputStream(file);
                     try {
@@ -128,9 +129,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                     RequestBody requestFile = RequestBody.create(MediaType.parse("text/csv"),file2);
                     MultipartBody.Part finalfile = MultipartBody.Part.createFormData("file",file2.getName(),requestFile);
                     String deviceString = Build.DEVICE;
-//                    String deviceString = "Tes";
                     RequestBody device = RequestBody.create(MultipartBody.FORM, deviceString);
-//                    RequestBody device = RequestBody.create(MediaType.parse("text/plain"), deviceString);
                     Log.d(TAG, "file: " + file2);
                     Log.d(TAG, "final file: " + finalfile);
                     Log.d(TAG, "device string: " + deviceString);
@@ -156,7 +155,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
 
                         @Override
                         public void onFailure(Call<PostPutDel> call, Throwable t) {
-                            Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+//                            Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
                             Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
                         }
                     });
@@ -240,7 +239,7 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                 Log.d(TAG, String.valueOf(counter));
                 Log.d(TAG, String.valueOf(nomorfile));
 
-                if (counter==2042){
+                if (counter==999){
                     Log.d(TAG, "Buat file tanpa stop");
                     CSVWriter writer = null;
                     try {
@@ -249,13 +248,14 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         DateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
                         String currentDate = dateFormat.format(date);
                         String currentTime = timeFormat.format(date);
-                        csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
+                        csv = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap" + ".csv");
                         writer = new CSVWriter(new FileWriter(csv, false));
                         writer.writeAll(header);
                         writer.writeAll(data);
+                        writer.close();
                         file = new File(csv);
                         Uri myUri = Uri.parse(csv);
-                        csv2 = (getExternalFilesDir(null).getAbsolutePath() + "/Rekap2_" + currentDate + "_" + currentTime + "_" + String.valueOf(nomorfile) + ".csv");
+                        csv2 = (getExternalFilesDir(null).getAbsolutePath() + "/Final_Rekap" + ".csv");
                         file2 = new File(csv2);
                         InputStream in = new FileInputStream(file);
                         try {
@@ -273,10 +273,15 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                         } finally {
                             in.close();
                         }
-                        RequestBody requestFile = RequestBody.create(MediaType.parse("text/csv"),file);
-                        MultipartBody.Part finalfile = MultipartBody.Part.createFormData("file",file.getName(),requestFile);
+                        RequestBody requestFile = RequestBody.create(MediaType.parse("text/csv"),file2);
+                        MultipartBody.Part finalfile = MultipartBody.Part.createFormData("file",file2.getName(),requestFile);
                         String deviceString = Build.DEVICE;
                         RequestBody device = RequestBody.create(MultipartBody.FORM, deviceString);
+                        Log.d(TAG, "file: " + file2);
+                        Log.d(TAG, "final file: " + finalfile);
+                        Log.d(TAG, "device string: " + deviceString);
+                        Log.d(TAG, "device: " + device);
+                        Log.d(TAG, "mapi: " + mApiInterface);
                         Call<PostPutDel> postData = mApiInterface.prosesFile(finalfile, device);
                         postData.enqueue(new Callback<PostPutDel>() {
                             @Override
@@ -286,9 +291,8 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
                                 } else {
                                     try {
                                         String responseBodyString = response.errorBody().string();
-                                        Log.d(TAG, responseBodyString);
+                                        Log.d(TAG, "response: " + responseBodyString);
                                         JSONObject jsonObject = new JSONObject(responseBodyString);
-
                                         Toast.makeText(MainActivity2.this, jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                                     } catch (Exception e) {
                                         Log.d(TAG, "Error Body JSON: " + e.getMessage());
@@ -298,12 +302,11 @@ public class MainActivity2 extends AppCompatActivity implements SensorEventListe
 
                             @Override
                             public void onFailure(Call<PostPutDel> call, Throwable t) {
-                                Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
+//                                Toast.makeText(MainActivity2.this, "Terjadi kesalahan", Toast.LENGTH_LONG).show();
                                 Log.d(TAG, "Error Retrofit Store: " + t.getMessage());
                             }
                         });
                         Toast.makeText(MainActivity2.this, "File tersimpan", Toast.LENGTH_LONG).show();
-                        writer.close();
                         counter=0;
                         Log.d(TAG, String.valueOf(nomorfile));
                         nomorfile = nomorfile+1;
