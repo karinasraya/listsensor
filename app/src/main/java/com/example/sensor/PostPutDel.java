@@ -14,7 +14,7 @@ public class PostPutDel {
         this.status = status;
     }
 
-    public void setDataActivity(DataSensor dataActivity) {
+    public void setDataActivity(DataSensor dataSensor) {
         this.dataSensor = dataSensor;
     }
 
