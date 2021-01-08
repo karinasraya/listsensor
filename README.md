@@ -1,8 +1,5 @@
 # Sensor Dalam Smartphone Android
 Dalam perangkat android memiliki banyak sensor yang dapat digunakan,berikut adalah daftar sensor Android
-#
-![alt text](image/hasil.jpeg)
-![alt text](image/hasil2.jpeg)
 ## Sensor ACCELOMETER
 __Deskripsi__ : 
 
